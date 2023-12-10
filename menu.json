@@ -1,0 +1,10 @@
+[
+  {
+    "name": "Pavo",
+    "description": "Pavo marinado en salsa de naranja y especias",
+    "start": "2023-12-10T00:00:00.000Z",
+    "eat": "2023-12-10T01:01:00.000Z",
+    "end": "2023-12-10T01:00:30.000Z",
+    "image": "./assets/food/pavo.jpg"
+  }
+]
