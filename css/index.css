@@ -47,10 +47,6 @@ h1 {
   background-color: var(--bg-color);
 }
 
-.food:hover {
-  background-color: var(--bg-color-2);
-}
-
 .food:nth-child(even) {
   flex-direction: row-reverse;
 }
@@ -93,10 +89,9 @@ h1 {
 
 .food .progress-bar {
   width: 100%;
-  height: 0.45rem;
+  height: 0.35rem;
   background: var(--bg-color-2);
   border-radius: 4px;
-  border: 1px solid var(--bg-color);
 }
 
 .food .progress-bar .bar {

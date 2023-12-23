@@ -1,26 +1,26 @@
 const override = $("#override");
 const foodContainer = $("#food-container");
-const foodTemplate = `<div class="food">
+const foodTemplate = `<div class="food" id="#NAME#">
 <img
   class="display"
   src="#IMAGE#"
-  id="#NAME#"
 />
 <div class="info">
   <h4>#NAME#</h4>
   <div class="progress">
     <span class="icon-clock"></span>
     <div class="progress-bar">
-      <div class="bar"></div>
+      <div class="bar" style="width: 0%;"></div>
     </div>
   </div>
 </div>
 </div>`;
+let menu = {};
 
 displayMenu();
 
 async function displayMenu() {
-  const menu = await (await fetch("./menu.json")).json();
+  menu = await (await fetch("./menu.json")).json();
 
   menu.forEach((food) => {
     const foodHTML = foodTemplate
@@ -28,35 +28,39 @@ async function displayMenu() {
       .replace(/#NAME#/g, food.name);
     const foodElement = $(foodHTML);
 
-    foodElement.on("click", () => {
-      const element = $(foodHTML);
-
-      element.css({
-        position: "fixed",
-        top: foodElement.offset().top,
-        left: foodElement.offset().left,
-        zIndex: 5,
-        width: foodElement.innerWidth(),
-        height: foodElement.innerHeight(),
-      });
-      override.append(element);
-      element.animate(
-        {
-          top: "1rem",
-          left: "1rem",
-          width: window.innerWidth - 32,
-          height: window.innerHeight - 32,
-        },
-        () => {
-          element.css({ flexDirection: "column" });
-        }
-      );
-      element.find(".display").animate({
-        width: "100%",
-        height: "25%",
-      });
-    });
-
     foodContainer.append(foodElement);
   });
 }
+
+setInterval(() => {
+  const foods = $(".food");
+  console.log(foods);
+  foods.each((index, food) => {
+    const foodElement = $(food);
+    const foodProgress = foodElement.find(".bar");
+
+    const start = new Date(menu[index].start).getTime();
+    const eat = new Date(menu[index].eat).getTime();
+    const end = new Date(menu[index].end).getTime();
+    const currentTime = new Date().getTime();
+    let percentage = 100;
+    let color = "#c6b173";
+
+    if (currentTime >= end) {
+      // Ended
+      console.log("Ended");
+      percentage = 100;
+      color = "#891515";
+    } else if (currentTime >= eat) {
+      // Eating
+      percentage = 100 - ((end - currentTime) / (end - eat)) * 100;
+      color = "#294221";
+    } else if (currentTime >= start) {
+      // Preparing
+      percentage = 100 - ((eat - currentTime) / (eat - start)) * 100;
+      color = "#385025";
+    }
+
+    foodProgress.css({ width: `${percentage}%`, backgroundColor: color });
+  });
+}, 1000);
